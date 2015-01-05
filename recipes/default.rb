@@ -16,3 +16,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+include_recipe 'docker'
+
+directory node['ecs']['log_folder'] do
+	owner 'docker'
+	group 'docker'
+	mode 0755
+	action :create
+end
+
+
+docker_container 'ecs-agent' do
+  image 'amazon/amazon-ecs-agent'
+  env ["ECS_LOGFILE=#{node['ecs']['log_folder']}/ecs.log",
+  	   "ECS_LOGLEVEL=#{node['ecs']['log_level']}",
+  	   "ECS_CLUSTER=#{node['ecs']['cluster']}",
+  	   "AWS_ACCESS_KEY_ID=#{node['ecs']['aws_access_key_id']}",
+  	   "AWS_SECRET_ACCESS_KEY=#{node['ecs']['aws_secret_access_key']}"
+    ]
+end
