@@ -15,4 +15,5 @@ gem 'berkshelf'
 # end
 
 gem 'test-kitchen'
+gem 'kitchen-ec2', github: 'test-kitchen/kitchen-ec2'
 gem 'kitchen-vagrant'
