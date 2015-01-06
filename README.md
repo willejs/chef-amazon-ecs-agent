@@ -1,8 +1,9 @@
 # amazon-ecs-agent-cookbook
 
-This is a work in progress!
-===========================
+This is a work in progress, but currently works
+
 This cookbook sets up amazon-ecs-agent into a docker container on ubuntu.
+You can run it in test kitchen with the default-ecs suite, and relevant environment variabes, and perhaps a kitchen local.yml for vpc settings (subnet_id, availability_zone, security_group_ids, interface) if needed.
 
 ## Supported Platforms
 
