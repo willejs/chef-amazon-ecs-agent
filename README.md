@@ -19,10 +19,34 @@ Ubuntu 14.04
     <th>Default</th>
   </tr>
   <tr>
-    <td><tt>['amazon-ecs-agent']['bacon']</tt></td>
-    <td>Boolean</td>
-    <td>whether to include bacon</td>
-    <td><tt>true</tt></td>
+    <td><tt>['amazon-ecs-agent']['log_folder']</tt></td>
+    <td>String</td>
+    <td>the log folder for the host</td>
+    <td><tt>/var/log/ecs</tt></td>
+  </tr>
+  <tr>
+    <td><tt>['amazon-ecs-agent']['log_level']</tt></td>
+    <td>String</td>
+    <td>the log level for the agent</td>
+    <td><tt>info</td>
+  </tr>
+  <tr>
+    <td><tt>['amazon-ecs-agent']['cluster']</tt></td>
+    <td>String</td>
+    <td>the ecs cluster name to attach to</td>
+    <td><tt>default</tt></td>
+  </tr>
+  <tr>
+    <td><tt>['amazon-ecs-agent']['aws_access_key_id']</tt></td>
+    <td>String</td>
+    <td>Your aws access key with ecs privs</td>
+    <td><tt>nil</tt></td>
+  </tr>
+  <tr>
+    <td><tt>['amazon-ecs-agent']['aws_secret_access_key']</tt></td>
+    <td>String</td>
+    <td>The secret access keyt</td>
+    <td><tt>nil</tt></td>
   </tr>
 </table>
 
