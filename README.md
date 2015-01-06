@@ -1,10 +1,13 @@
 # amazon-ecs-agent-cookbook
 
-TODO: Enter the cookbook description here.
+This is a work in progress!
+===========================
+This cookbook sets up amazon-ecs-agent into a docker container on ubuntu.
 
 ## Supported Platforms
 
-TODO: List your supported platforms.
+Ubuntu 12.04
+Ubuntu 14.04
 
 ## Attributes
 
