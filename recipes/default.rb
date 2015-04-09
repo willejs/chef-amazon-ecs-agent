@@ -32,8 +32,7 @@ docker_container 'ecs-agent' do
        "ECS_LOGLEVEL=#{node['amazon-ecs-agent']['log_level']}",
        "ECS_CLUSTER=#{node['amazon-ecs-agent']['cluster']}",
        "AWS_ACCESS_KEY_ID=#{node['amazon-ecs-agent']['aws_access_key_id']}",
-       "AWS_SECRET_ACCESS_KEY=\
-       #{node['amazon-ecs-agent']['aws_secret_access_key']}"
+       "AWS_SECRET_ACCESS_KEY=#{node['amazon-ecs-agent']['aws_secret_access_key']}"
       ]
   volume ["#{node['amazon-ecs-agent']['log_folder']}:/log",
           '/var/run/docker.sock:/var/run/docker.sock'
