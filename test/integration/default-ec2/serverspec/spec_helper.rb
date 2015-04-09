@@ -1,3 +1,2 @@
 require 'serverspec'
 require 'json'
-
