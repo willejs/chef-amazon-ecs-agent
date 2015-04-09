@@ -40,4 +40,6 @@ docker_container 'ecs-agent' do
          ]
   port '51678:51678'
   cmd_timeout 120
+  detach true
+  tag node['amazon-ecs-agent']['tag']
 end

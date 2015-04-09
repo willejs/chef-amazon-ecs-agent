@@ -1,5 +1,7 @@
 # amazon-ecs-agent-cookbook
 
+[![Build Status](https://travis-ci.org/willejs/chef-amazon-ecs-agent.svg?branch=master)](https://travis-ci.org/willejs/chef-amazon-ecs-agent)
+
 This is a work in progress, but currently works
 
 This cookbook sets up amazon-ecs-agent into a docker container on ubuntu.

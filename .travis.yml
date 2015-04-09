@@ -1,8 +1,11 @@
 language: ruby
 rvm:
-  - 1.9.3
+  - 2.1.2
 env:
   - USE_SYSTEM_GECODE=1
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install libgecode-dev
 install:
   - bundle install --path vendor --binstubs
 script:
