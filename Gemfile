@@ -1,19 +1,27 @@
+# Encoding: utf-8
+
 source 'https://rubygems.org'
 
 gem 'berkshelf'
 
-# Uncomment these lines if you want to live on the Edge:
-#
-# group :development do
-#   gem "berkshelf", github: "berkshelf/berkshelf"
-#   gem "vagrant", github: "mitchellh/vagrant", tag: "v1.5.2"
-# end
-#
-# group :plugins do
-#   gem "vagrant-berkshelf", github: "berkshelf/vagrant-berkshelf"
-#   gem "vagrant-omnibus", github: "schisamo/vagrant-omnibus"
-# end
-
-gem 'test-kitchen'
-gem 'kitchen-ec2', github: 'test-kitchen/kitchen-ec2'
-gem 'kitchen-vagrant'
+if ENV['CI']
+  gem 'serverspec', '>= 2.0'
+  gem 'vagrant-wrapper'
+  gem 'chef', '>= 11.8'
+  gem 'rake', '>= 10.2'
+  gem 'rubocop', '>= 0.23'
+  gem 'foodcritic', '>= 4.0'
+  gem 'chefspec', '>= 4.0'
+  gem 'test-kitchen'
+  gem 'kitchen-vagrant'
+  gem 'nokogiri', '>= 1.6.4.1'
+else
+  gem 'chef'
+  gem 'rake'
+  gem 'rubocop'
+  gem 'foodcritic'
+  gem 'chefspec'
+  gem 'test-kitchen'
+  gem 'kitchen-vagrant'
+  gem 'kitchen-ec2', github: 'test-kitchen/kitchen-ec2'
+end
