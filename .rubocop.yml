@@ -1,0 +1,17 @@
+AllCops:
+  Exclude:
+    - 'vendor/**/*'
+    - 'test/support/**'
+    - 'bin/**/*'
+  Include:
+    - '**/Rakefile'
+    - '**/Gemfile'
+    - '**/Vagrantfile'
+    - '**/Berksfile'
+CyclomaticComplexity:
+  Enabled: false
+
+LineLength:
+  Enabled: true
+  Max: 200
+
