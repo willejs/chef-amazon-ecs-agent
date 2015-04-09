@@ -48,7 +48,7 @@ Ubuntu 14.04
   <tr>
     <td><tt>node['amazon-ecs-agent']['aws_secret_access_key']</tt></td>
     <td>String</td>
-    <td>The secret access keyt</td>
+    <td>The secret access key</td>
     <td><tt>nil</tt></td>
   </tr>
 </table>
@@ -78,4 +78,4 @@ Include `amazon-ecs-agent` in your node's `run_list`:
 
 ## License and Authors
 
-Author:: Will Salt (<will@crowdsurge.com>)
+Author:: Will Salt (<williamejsalt@gmail.com>)
