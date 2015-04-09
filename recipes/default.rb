@@ -38,4 +38,6 @@ docker_container 'ecs-agent' do
   volume ["#{node['amazon-ecs-agent']['log_folder']}:/log", '/var/run/docker.sock:/var/run/docker.sock']
   port '51678:51678'
   cmd_timeout 120
+  detach true
+  tag node['amazon-ecs-agent']['tag']
 end
