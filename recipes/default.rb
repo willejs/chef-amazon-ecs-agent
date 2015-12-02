@@ -17,28 +17,42 @@
 # limitations under the License.
 #
 
-include_recipe 'docker'
-
+# create the default log folder
 directory node['amazon-ecs-agent']['log_folder'] do
-  owner 'docker'
-  group 'docker'
   mode 0755
   action :create
 end
 
-docker_container 'ecs-agent' do
-  image 'amazon/amazon-ecs-agent'
+package "linux-image-extra-#{node['kernel']['release']}" do
+  only_if { node['amazon-ecs-agent']['storage_driver'] == 'aufs' }
+end
+
+docker_installation_binary 'default' do
+  version '1.8.3'
+  action :create
+end
+
+# create the docker service
+docker_service 'default' do
+  storage_driver node['amazon-ecs-agent']['storage_driver']
+  action [:create, :start]
+end
+
+# pull down the latest image
+docker_image 'amazon/amazon-ecs-agent'
+
+# start the container and map it to port 8484
+docker_container 'amazon-ecs-agent' do
+  repo 'amazon/amazon-ecs-agent'
+  port '51678:51678'
+  tag 'latest'
   env ['ECS_LOGFILE=/log/ecs-agent.log',
        "ECS_LOGLEVEL=#{node['amazon-ecs-agent']['log_level']}",
        "ECS_CLUSTER=#{node['amazon-ecs-agent']['cluster']}",
        "AWS_ACCESS_KEY_ID=#{node['amazon-ecs-agent']['aws_access_key_id']}",
        "AWS_SECRET_ACCESS_KEY=#{node['amazon-ecs-agent']['aws_secret_access_key']}"
       ]
-  volume ["#{node['amazon-ecs-agent']['log_folder']}:/log",
-          '/var/run/docker.sock:/var/run/docker.sock'
-         ]
-  port '51678:51678'
-  cmd_timeout 120
-  detach true
-  tag node['amazon-ecs-agent']['tag']
+  binds ["#{node['amazon-ecs-agent']['log_folder']}:/log",
+         '/var/run/docker.sock:/var/run/docker.sock'
+        ]
 end
