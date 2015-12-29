@@ -23,6 +23,11 @@ directory node['amazon-ecs-agent']['log_folder'] do
   action :create
 end
 
+directory node['amazon-ecs-agent']['data_folder'] do
+  mode 0755
+  action :create
+end
+
 package "linux-image-extra-#{node['kernel']['release']}" do
   only_if { node['amazon-ecs-agent']['storage_driver'] == 'aufs' }
 end
@@ -46,13 +51,16 @@ docker_container 'amazon-ecs-agent' do
   repo 'amazon/amazon-ecs-agent'
   port '51678:51678'
   tag 'latest'
-  env ['ECS_LOGFILE=/log/ecs-agent.log',
-       "ECS_LOGLEVEL=#{node['amazon-ecs-agent']['log_level']}",
-       "ECS_CLUSTER=#{node['amazon-ecs-agent']['cluster']}",
-       "AWS_ACCESS_KEY_ID=#{node['amazon-ecs-agent']['aws_access_key_id']}",
-       "AWS_SECRET_ACCESS_KEY=#{node['amazon-ecs-agent']['aws_secret_access_key']}"
-      ]
-  binds ["#{node['amazon-ecs-agent']['log_folder']}:/log",
-         '/var/run/docker.sock:/var/run/docker.sock'
-        ]
+  env [
+    'ECS_LOGFILE=/log/ecs-agent.log',
+    "ECS_LOGLEVEL=#{node['amazon-ecs-agent']['log_level']}",
+    "ECS_CLUSTER=#{node['amazon-ecs-agent']['cluster']}",
+    "AWS_ACCESS_KEY_ID=#{node['amazon-ecs-agent']['aws_access_key_id']}",
+    "AWS_SECRET_ACCESS_KEY=#{node['amazon-ecs-agent']['aws_secret_access_key']}"
+  ] + node['amazon-ecs-agent']['docker_additional_env']
+  binds [
+    "#{node['amazon-ecs-agent']['log_folder']}:/log",
+    '/var/run/docker.sock:/var/run/docker.sock',
+    "#{node['amazon-ecs-agent']['data_folder']}:/data"
+  ] + node['amazon-ecs-agent']['docker_additional_binds']
 end
