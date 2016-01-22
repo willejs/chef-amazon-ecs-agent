@@ -16,6 +16,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+include_recipe 'chef-sugar'
+
+package 'apt-transport-https' if ubuntu?
+
+apt_repository 'docker' do
+  uri 'https://apt.dockerproject.org/repo'
+  trusted true
+  components ["ubuntu-#{node['lsb']['codename']}", 'main']
+  only_if { ubuntu? }
+end
 
 # create the default log folder
 directory node['amazon-ecs-agent']['log_folder'] do
@@ -32,8 +42,8 @@ package "linux-image-extra-#{node['kernel']['release']}" do
   only_if { node['amazon-ecs-agent']['storage_driver'] == 'aufs' }
 end
 
-docker_installation_binary 'default' do
-  version '1.8.3'
+docker_installation_package 'default' do
+  version node['amazon-ecs-agent']['docker']['version']
   action :create
 end
 
