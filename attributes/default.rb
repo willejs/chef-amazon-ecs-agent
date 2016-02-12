@@ -6,5 +6,6 @@ default['amazon-ecs-agent']['aws_access_key_id'] = nil
 default['amazon-ecs-agent']['aws_secret_access_key'] = nil
 default['amazon-ecs-agent']['tag'] = 'v1.0.0'
 default['amazon-ecs-agent']['storage_driver'] = 'aufs'
+default['amazon-ecs-agent']['docker']['version'] = '1.9.1'
 default['amazon-ecs-agent']['docker_additional_binds'] = []
 default['amazon-ecs-agent']['docker_additional_env'] = []
