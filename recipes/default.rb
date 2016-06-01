@@ -23,7 +23,8 @@ package 'apt-transport-https' if ubuntu?
 apt_repository 'docker' do
   uri 'https://apt.dockerproject.org/repo'
   trusted true
-  components ["ubuntu-#{node['lsb']['codename']}", 'main']
+  distribution "ubuntu-#{node['lsb']['codename']}"
+  components ['main']
   only_if { ubuntu? }
 end
 
