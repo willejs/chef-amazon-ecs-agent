@@ -51,6 +51,8 @@ end
 docker_service 'default' do
   storage_driver node['amazon-ecs-agent']['storage_driver']
   action [:create, :start]
+  log_driver 'gelf'
+  log_opts ['gelf-address=udp://localhost:9998']
 end
 
 # pull down the latest image
