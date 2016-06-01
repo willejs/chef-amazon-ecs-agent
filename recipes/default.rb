@@ -23,7 +23,8 @@ package 'apt-transport-https' if ubuntu?
 apt_repository 'docker' do
   uri 'https://apt.dockerproject.org/repo'
   trusted true
-  components ["ubuntu-#{node['lsb']['codename']}", 'main']
+  distribution "ubuntu-#{node['lsb']['codename']}"
+  components ['main']
   only_if { ubuntu? }
 end
 
@@ -51,6 +52,8 @@ end
 docker_service 'default' do
   storage_driver node['amazon-ecs-agent']['storage_driver']
   action [:create, :start]
+  log_driver 'gelf'
+  log_opts ['gelf-address=udp://localhost:9998']
 end
 
 # pull down the latest image
