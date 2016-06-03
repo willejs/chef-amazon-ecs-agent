@@ -65,7 +65,9 @@ docker_container 'amazon-ecs-agent' do
   port '51678:51678'
   tag 'latest'
   env [
+    'ECS_DATADIR=/data/',
     'ECS_LOGFILE=/log/ecs-agent.log',
+    "ECS_RESERVED_MEMORY=#{node['amazon-ecs-agent']['reserved_memory']}",
     "ECS_LOGLEVEL=#{node['amazon-ecs-agent']['log_level']}",
     "ECS_CLUSTER=#{node['amazon-ecs-agent']['cluster']}",
     "AWS_ACCESS_KEY_ID=#{node['amazon-ecs-agent']['aws_access_key_id']}",
