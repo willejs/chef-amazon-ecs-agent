@@ -33,7 +33,7 @@ package "linux-image-extra-#{node['kernel']['release']}" do
 end
 
 docker_installation_binary 'default' do
-  version '1.8.3'
+  version '1.10.3'
   action :create
 end
 
