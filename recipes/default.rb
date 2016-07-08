@@ -25,6 +25,7 @@ end
 
 directory node['amazon-ecs-agent']['data_folder'] do
   mode 0755
+  recursive true
   action :create
 end
 
