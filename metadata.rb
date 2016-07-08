@@ -6,4 +6,4 @@ description 'Installs/Configures amazon-ecs-agent'
 long_description 'Installs/Configures amazon-ecs-agent'
 version '1.1.0'
 
-depends 'docker', '~> 2.9.2'
+depends 'docker', '~> 2.2'
