@@ -7,4 +7,4 @@ default['amazon-ecs-agent']['aws_secret_access_key'] = nil
 default['amazon-ecs-agent']['tag'] = 'v1.0.0'
 default['amazon-ecs-agent']['storage_driver'] = 'overlay'
 default['amazon-ecs-agent']['docker_additional_binds'] = []
-default['amazon-ecs-agent']['docker_additional_env'] = []
+default['amazon-ecs-agent']['docker_additional_envs'] = []

@@ -47,18 +47,31 @@ end
 # pull down the latest image
 docker_image 'amazon/amazon-ecs-agent'
 
+environment_variables = [ 
+    'ECS_DATADIR=/data',
+    'ECS_LOGFILE=/log/ecs-agent.log',
+    "ECS_LOGLEVEL=#{node['amazon-ecs-agent']['log_level']}",
+    "ECS_CLUSTER=#{node['amazon-ecs-agent']['cluster']}"
+  ] + node['amazon-ecs-agent']['docker_additional_envs']
+
+# use the env file to trigger a redeploy on changes
+file '/etc/default/ecs-agent' do
+  action :create
+  owner 'root'
+  group 'root'
+  mode '0644'
+  content environment_variables.join('\n')
+  notifies :redeploy, 'docker_container[amazon-ecs-agent]'
+end
+
 # start the container and map it to port 8484
 docker_container 'amazon-ecs-agent' do
   repo 'amazon/amazon-ecs-agent'
   port '51678:51678'
   tag 'latest'
-  env [
-    'ECS_LOGFILE=/log/ecs-agent.log',
-    "ECS_LOGLEVEL=#{node['amazon-ecs-agent']['log_level']}",
-    "ECS_CLUSTER=#{node['amazon-ecs-agent']['cluster']}",
-    "AWS_ACCESS_KEY_ID=#{node['amazon-ecs-agent']['aws_access_key_id']}",
-    "AWS_SECRET_ACCESS_KEY=#{node['amazon-ecs-agent']['aws_secret_access_key']}"
-  ] + node['amazon-ecs-agent']['docker_additional_env']
+
+  env environment_variables
+
   binds [
     "#{node['amazon-ecs-agent']['log_folder']}:/log",
     '/var/run/docker.sock:/var/run/docker.sock',
