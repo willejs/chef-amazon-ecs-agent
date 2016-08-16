@@ -23,7 +23,8 @@ package 'apt-transport-https' if ubuntu?
 apt_repository 'docker' do
   uri 'https://apt.dockerproject.org/repo'
   trusted true
-  components ["ubuntu-#{node['lsb']['codename']}", 'main']
+  distribution "ubuntu-#{node['lsb']['codename']}"
+  components ['main']
   only_if { ubuntu? }
 end
 
@@ -48,9 +49,26 @@ docker_installation_package 'default' do
 end
 
 # create the docker service
-docker_service 'default' do
-  storage_driver node['amazon-ecs-agent']['storage_driver']
-  action [:create, :start]
+
+if node['amazon-ecs-agent']['storage_driver_opts'].size > 0
+
+  docker_service 'default' do
+    storage_driver node['amazon-ecs-agent']['storage_driver']
+    storage_opts node['amazon-ecs-agent']['storage_driver_opts']
+    action [:create, :start]
+    log_driver 'gelf'
+    log_opts ['gelf-address=udp://localhost:9998']
+  end
+
+else
+
+  docker_service 'default' do
+    storage_driver node['amazon-ecs-agent']['storage_driver']
+    action [:create, :start]
+    log_driver 'gelf'
+    log_opts ['gelf-address=udp://localhost:9998']
+  end
+
 end
 
 # pull down the latest image
@@ -62,7 +80,9 @@ docker_container 'amazon-ecs-agent' do
   port '51678:51678'
   tag 'latest'
   env [
+    'ECS_DATADIR=/data/',
     'ECS_LOGFILE=/log/ecs-agent.log',
+    "ECS_RESERVED_MEMORY=#{node['amazon-ecs-agent']['reserved_memory']}",
     "ECS_LOGLEVEL=#{node['amazon-ecs-agent']['log_level']}",
     "ECS_CLUSTER=#{node['amazon-ecs-agent']['cluster']}",
     "AWS_ACCESS_KEY_ID=#{node['amazon-ecs-agent']['aws_access_key_id']}",
