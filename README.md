@@ -65,6 +65,19 @@ Include `amazon-ecs-agent` in your node's `run_list`:
 }
 ```
 
+## Testing (on EC2)
+
+* Create an IAM role that supports ECS registration
+* Create an ECS cluster (or use 'default')
+
+```sh
+export AWS_SSH_KEY_ID='MyKeyName'
+export AWS_CREDENTIAL_PROFILE='Profile'
+export AWS_IAM_PROFILE='ECSAgent'
+
+kitchen test default-ec2
+```
+
 ## Contributing
 
 1. Fork the repository on Github

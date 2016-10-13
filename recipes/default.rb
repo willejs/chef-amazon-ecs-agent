@@ -18,23 +18,37 @@
 #
 include_recipe 'chef-sugar'
 
-package 'apt-transport-https' if ubuntu?
+# setup docker apt repo
+include_recipe 'chef-apt-docker'
 
-apt_repository 'docker' do
-  uri 'https://apt.dockerproject.org/repo'
-  trusted true
-  components ["ubuntu-#{node['lsb']['codename']}", 'main']
-  only_if { ubuntu? }
+# IAM role support for tasks
+include_recipe 'sysctl::default'
+include_recipe 'iptables::default'
+sysctl_param 'net.ipv4.conf.all.route_localnet' do
+  value 1
+end
+iptables_rule 'dnat_80_to_51679' do
+  lines [
+    '*nat',
+    '-A PREROUTING -p tcp -d 169.254.170.2 --dport 80 -j DNAT --to-destination 127.0.0.1:51679'
+  ].join("\n")
+end
+iptables_rule 'redirect_80_to_51679' do
+  lines [
+    '*nat',
+    '-A OUTPUT -d 169.254.170.2 -p tcp -m tcp --dport 80 -j REDIRECT --to-ports 51679'
+  ].join("\n")
 end
 
-# create the default log folder
+# create directories
 directory node['amazon-ecs-agent']['log_folder'] do
-  mode 0755
+  mode '0755'
   action :create
 end
 
 directory node['amazon-ecs-agent']['data_folder'] do
-  mode 0755
+  mode '0755'
+  recursive true
   action :create
 end
 
@@ -59,18 +73,22 @@ docker_image 'amazon/amazon-ecs-agent'
 # start the container and map it to port 8484
 docker_container 'amazon-ecs-agent' do
   repo 'amazon/amazon-ecs-agent'
-  port '51678:51678'
-  tag 'latest'
+  tag node['amazon-ecs-agent']['tag']
+  network_mode 'host'
   env [
     'ECS_LOGFILE=/log/ecs-agent.log',
     "ECS_LOGLEVEL=#{node['amazon-ecs-agent']['log_level']}",
+    'ECS_DATADIR=/data',
+    'ECS_UPDATE_DOWNLOAD_DIR=/var/cache/ecs',
     "ECS_CLUSTER=#{node['amazon-ecs-agent']['cluster']}",
     "AWS_ACCESS_KEY_ID=#{node['amazon-ecs-agent']['aws_access_key_id']}",
     "AWS_SECRET_ACCESS_KEY=#{node['amazon-ecs-agent']['aws_secret_access_key']}"
   ] + node['amazon-ecs-agent']['docker_additional_env']
-  binds [
-    "#{node['amazon-ecs-agent']['log_folder']}:/log",
+  volumes [
     '/var/run/docker.sock:/var/run/docker.sock',
-    "#{node['amazon-ecs-agent']['data_folder']}:/data"
+    "#{node['amazon-ecs-agent']['log_folder']}:/log",
+    "#{node['amazon-ecs-agent']['data_folder']}:/data",
+    "#{node['amazon-ecs-agent']['cache_folder']}:/var/cache/ecs"
   ] + node['amazon-ecs-agent']['docker_additional_binds']
+  restart_policy node['amazon-ecs-agent']['restart_policy']
 end
