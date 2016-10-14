@@ -2,12 +2,13 @@
 driver:
   name: vagrant
 
-
 provisioner:
   name: chef_zero
 
 platforms:
   - name: ubuntu-14.04
+    run_list:
+      - recipe[apt::default]
 
 suites:
   - name: default
@@ -16,13 +17,19 @@ suites:
     attributes:
 
   - name: default-ec2
-    driver_plugin: ec2
     driver:
+      name: ec2
+      image_id: ami-fce3c696
+      region: "us-east-1"
+      availability_zone: "us-east-1c"
+      instance_type: "t2.small"
+      security_group_ids:
+        - default
+      aws_ssh_key_id: <%= ENV['AWS_SSH_KEY_ID'] %>
+      shared_credentials_profile: <%= ENV['AWS_CREDENTIAL_PROFILE'] %>
+      iam_profile_name: <%= ENV['AWS_IAM_PROFILE'] %>
+    transport:
       username: ubuntu
-      image_id: ami-74e27e1c
+      ssh_key: ~/.ssh/id_rsa
     run_list:
       - recipe[amazon-ecs-agent]
-    attributes:
-      amazon-ecs-agent:
-        aws_access_key_id: <%= ENV['AWS_ACCESS_KEY_ID'] %>
-        aws_secret_access_key: <%= ENV['AWS_SECRET_ACCESS_KEY'] %>
